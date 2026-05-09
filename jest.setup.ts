@@ -1,7 +1,25 @@
 import '@testing-library/jest-native/extend-expect';
 
+// React 19: silence the act() warning that fires in testing-library internals
+// until @testing-library/react-native fully adopts the new async act()
+global.IS_REACT_ACT_ENVIRONMENT = true;
+
 // Silence non-actionable React Native warnings in test output
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+
+// react-native-reanimated v4 requires this mock in Jest environments
+jest.mock('react-native-reanimated', () => {
+  const Reanimated = require('react-native-reanimated/mock');
+  Reanimated.default.call = jest.fn();
+  return Reanimated;
+});
+
+// react-native-worklets (reanimated v4 peer dep) — no-op in Jest
+jest.mock('react-native-worklets', () => ({
+  runOnUI: (fn: () => void) => fn,
+  runOnJS: (fn: () => void) => fn,
+  useSharedValue: (init: unknown) => ({ value: init }),
+}));
 
 // Mock expo-router so screen tests don't need a full navigation tree
 jest.mock('expo-router', () => ({
@@ -25,7 +43,7 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
 
-// Mock expo-notifications
+// Mock expo-notifications (deprecated exports removed in SDK 54)
 jest.mock('expo-notifications', () => ({
   setNotificationHandler: jest.fn(),
   getPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
@@ -44,6 +62,14 @@ jest.mock('expo-device', () => ({ isDevice: true }));
 jest.mock('expo-network', () => ({
   addNetworkStateListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
   getNetworkStateAsync: jest.fn().mockResolvedValue({ isConnected: true }),
+}));
+
+// Mock expo-image-picker (SDK 54: MediaTypeOptions removed, use string literals)
+jest.mock('expo-image-picker', () => ({
+  launchImageLibraryAsync: jest.fn().mockResolvedValue({ canceled: true, assets: [] }),
+  launchCameraAsync: jest.fn().mockResolvedValue({ canceled: true, assets: [] }),
+  requestMediaLibraryPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
+  requestCameraPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
 }));
 
 // Mock socket.io-client

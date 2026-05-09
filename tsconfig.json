@@ -6,7 +6,9 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler"
   },
   "include": [
     "**/*.ts",
