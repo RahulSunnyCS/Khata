@@ -4,6 +4,86 @@ India-first expense splitting app with UPI-native settlement and offline-first a
 
 ---
 
+## Local Development
+
+### 1. Prerequisites
+
+- Node.js 20+
+- For iOS: Xcode 15+, CocoaPods (`sudo gem install cocoapods`)
+- For Android: Android Studio + Java 17
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment
+
+Copy the example config and fill in values. At minimum the app runs without any third-party keys — analytics, notifications, and Sentry are silently disabled when their keys are absent.
+
+```bash
+cp app.config.example.ts app.config.ts
+```
+
+If you don't have an `app.config.example.ts`, create `app.config.ts` at the project root:
+
+```ts
+import { ExpoConfig } from 'expo/config';
+
+const config: ExpoConfig = {
+  name: 'Khaata',
+  slug: 'khaata',
+  extra: {
+    apiBaseUrl: process.env.API_BASE_URL ?? 'http://localhost:3000/v1',
+    socketUrl: process.env.SOCKET_URL ?? 'http://localhost:3000',
+    googleWebClientId: process.env.GOOGLE_WEB_CLIENT_ID ?? '',
+    googleAndroidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID ?? '',
+    googleIosClientId: process.env.GOOGLE_IOS_CLIENT_ID ?? '',
+    posthogApiKey: process.env.POSTHOG_API_KEY ?? '',   // optional
+    posthogHost: process.env.POSTHOG_HOST ?? 'https://app.posthog.com',
+    sentryDsn: process.env.SENTRY_DSN ?? '',            // optional
+    s3BucketUrl: process.env.S3_BUCKET_URL ?? '',
+  },
+};
+
+export default config;
+```
+
+### 4. Run on a simulator / device
+
+```bash
+# iOS simulator
+npm run ios
+
+# Android emulator
+npm run android
+
+# Browser (limited native features)
+npm run web
+```
+
+> **Note:** Push notifications require a physical device and a development build. They are automatically skipped in Expo Go and simulators.
+
+### 5. (Optional) Native prebuild
+
+Only needed when adding a new native module or changing `app.json` plugins:
+
+```bash
+npx expo prebuild --clean
+npx expo run:ios    # or run:android
+```
+
+### 6. Run tests
+
+```bash
+npm test            # watch mode
+npm run test:ci     # single run with coverage
+npm run typecheck   # TypeScript check
+```
+
+---
+
 ## Tech Stack
 
 ### Core
