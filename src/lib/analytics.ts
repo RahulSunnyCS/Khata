@@ -3,12 +3,12 @@ import { Config } from '../constants/config';
 
 let client: PostHog | null = null;
 
-export function initAnalytics(): PostHog {
+export function initAnalytics(): PostHog | null {
   if (client) return client;
+  if (!Config.posthogApiKey) return null;
 
   client = new PostHog(Config.posthogApiKey, {
     host: Config.posthogHost,
-    // Flush immediately in dev, batch in prod
     flushAt: __DEV__ ? 1 : 20,
     flushInterval: __DEV__ ? 0 : 30000,
   });
