@@ -16,10 +16,12 @@ export default function ProfileSetupScreen() {
 
   async function pickAvatar() {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: 'images',
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.7,
+      // SDK 54: preserve original format (HEIC) on iOS by default;
+      // pass .automatic only if JPEG re-encoding is required
     });
     if (!result.canceled && result.assets[0]) {
       setAvatarUri(result.assets[0].uri);
