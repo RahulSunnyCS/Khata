@@ -1,25 +1,39 @@
 {
   "expo": {
-    "name": "splity",
-    "slug": "splity",
+    "name": "Khaata",
+    "slug": "khaata",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "khaata",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#C75B1A"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "app.khaata.mobile",
+      "infoPlist": {
+        "NSContactsUsageDescription": "Khaata uses your contacts to help you add friends to groups.",
+        "NSCameraUsageDescription": "Khaata uses your camera to capture receipt photos.",
+        "NSPhotoLibraryUsageDescription": "Khaata accesses your photos to attach receipts to expenses."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#C75B1A"
+      },
+      "package": "app.khaata.mobile",
+      "permissions": [
+        "READ_CONTACTS",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +41,27 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#C75B1A"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Khaata uses your camera to capture receipt photos."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Khaata uses your contacts to help you add friends to groups."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
