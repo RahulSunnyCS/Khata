@@ -1,17 +1,29 @@
-import { Text, View, StyleSheet } from "react-native";
+import { useEffect } from 'react';
+import { View, ActivityIndicator } from 'react-native';
+import { Redirect } from 'expo-router';
+import { authService } from '@/src/services/auth.service';
+import { useAuthStore } from '@/src/store/auth.store';
+import { Colors } from '@/src/constants/theme';
 
 export default function Index() {
-  return (
-    <View style={styles.container}>
-      <Text>This is first version of splity</Text>
-    </View>
-  );
-}
+  const { isAuthenticated, isLoading, setLoading } = useAuthStore();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+  useEffect(() => {
+    async function checkSession() {
+      setLoading(true);
+      await authService.restoreSession();
+      setLoading(false);
+    }
+    checkSession();
+  }, [setLoading]);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.backgroundLight }}>
+        <ActivityIndicator color={Colors.primary} size="large" />
+      </View>
+    );
+  }
+
+  return <Redirect href={isAuthenticated ? '/(app)/(tabs)' : '/(auth)/welcome'} />;
+}
